@@ -8,6 +8,7 @@
     <modules>
         <module>ccx-mq-broker</module>
         <module>ccx-mq-client</module>
+        <module>ccx-mq-remoting</module>
     </modules>
     <packaging>pom</packaging>
     <name>ccx-mq</name>
