@@ -29,7 +29,7 @@ import static com.ccx.mq.remoting.protocol.consts.CommandFrameConst.*;
  * 1B version（版本）
  * 4B full length（消息长度）
  * 1B commandType（命令类型：请求/响应）
- * 4B code (请求标识/响应码)
+ * 4B commandCode (命令编码)
  * 1B compress（压缩类型）
  * 1B serialize（序列化类型）
  * 8B requestId（请求的Id）
@@ -41,9 +41,23 @@ import static com.ccx.mq.remoting.protocol.consts.CommandFrameConst.*;
  */
 public class CommandCodec {
 
-    private static final CommandDecoder DECODER = new CommandDecoder();
+    /**
+     * 编码，并写到输出流
+     *
+     * @param cmd 命令
+     * @param out 输出流
+     */
+    public void encode(Command cmd, ByteBuf out) {
+        CommandEncoder.INSTANT.encode(cmd, out);
+    }
 
+    /**
+     * 命令解码
+     *
+     * @param in 字节流
+     * @return 命令
+     */
     public Command decode(ByteBuf in) {
-        return DECODER.decode(in);
+        return CommandDecoder.INSTANT.decode(in);
     }
 }

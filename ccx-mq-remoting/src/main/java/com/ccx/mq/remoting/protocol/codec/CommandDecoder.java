@@ -21,6 +21,11 @@ import static com.ccx.mq.remoting.protocol.consts.CommandFrameConst.*;
  */
 class CommandDecoder {
 
+    public static final CommandDecoder INSTANT = new CommandDecoder();
+
+    private CommandDecoder() {
+    }
+
     /**
      * 解码
      *
