@@ -1,9 +1,10 @@
-package com.ccx.mq.remoting.protocol;
+package com.ccx.mq.remoting.protocol.codec;
 
+import com.ccx.mq.remoting.protocol.Command;
 import com.ccx.mq.remoting.protocol.compress.Compressor;
 import com.ccx.mq.remoting.protocol.compress.CompressorFactory;
+import com.ccx.mq.remoting.protocol.consts.CommandCode;
 import com.ccx.mq.remoting.protocol.consts.CommandType;
-import com.ccx.mq.remoting.protocol.consts.RequestCode;
 import com.ccx.mq.remoting.protocol.serialize.Serializer;
 import com.ccx.mq.remoting.protocol.serialize.SerializerFactory;
 import io.netty.buffer.ByteBuf;
@@ -13,32 +14,12 @@ import java.util.Arrays;
 import static com.ccx.mq.remoting.protocol.consts.CommandFrameConst.*;
 
 /**
- * 命令编解码器
- * <pre>
- * 0   1   2       3   4   5   6   7           8   9   10  11  12       13        14  15  16  17  18  19  20  21  22
- * +---+---+-------+---+---+---+---+-----------+---+---+---+---+--------+---------+---+---+---+---+---+---+---+---+
- * | magic |version|  full length  |commandType|     code      |compress|serialize|            requestId          |
- * +---+---+-------+---+---+---+---+-----------+---+---+---+---+--------+---------+---+---+---+---+---+---+---+---+
- * |                                                                                                              |
- * |                                         body                                                                 |
- * |                                                                                                              |
- * |                                        ... ...                                                               |
- * +--------------------------------------------------------------------------------------------------------------+
- * 2B magic（魔法数）
- * 1B version（版本）
- * 4B full length（消息长度）
- * 1B commandType（命令类型：请求/响应）
- * 4B code (请求标识/响应码)
- * 1B compress（压缩类型）
- * 1B serialize（序列化类型）
- * 8B requestId（请求的Id）
- * body（object类型数据）
- * </pre>
+ * 命令解码器，仅给 {@link CommandCodec} 用，外部的不要用这个类，所以这个类不 public
  *
  * @author chenchuxin
- * @date 2021/8/24
+ * @date 2021/8/25
  */
-public class CommandCodec {
+class CommandDecoder {
 
     /**
      * 解码
@@ -46,7 +27,7 @@ public class CommandCodec {
      * @param in 字节流
      * @return 命令对象
      */
-    public Command decode(ByteBuf in) {
+    Command decode(ByteBuf in) {
         readAndCheckMagic(in);
         byte version = in.readByte();
         int fullLength = in.readInt();
@@ -56,7 +37,7 @@ public class CommandCodec {
         byte serializerType = in.readByte();
         long requestId = in.readLong();
         Command cmd = Command.builder().version(version)
-                .commandType(commandType).code(code)
+                .commandType(commandType).commandCode(code)
                 .compressorType(compressorType)
                 .serializerType(serializerType)
                 .requestId(requestId)
@@ -96,15 +77,13 @@ public class CommandCodec {
             throw new IllegalArgumentException("unknown serializer type:" + cmd.getSerializerType());
         }
 
-        Class<?> clazz = null;
-        if (cmd.getCommandType() == CommandType.REQUEST.getValue()) {
-            RequestCode requestCode = RequestCode.fromCode(cmd.getCommandType());
-            if (requestCode == null) {
-                throw new IllegalArgumentException("unknown command type:" + cmd.getCommandType());
-            }
-            clazz = requestCode.getBodyClass();
+        CommandCode commandCode = CommandCode.fromCode(cmd.getCommandType());
+        if (commandCode == null) {
+            throw new IllegalArgumentException("unknown command type:" + cmd.getCommandType());
         }
-        // TODO: CommandType.RESPONSE
+        Class<?> clazz = cmd.getCommandType() == CommandType.REQUEST.getValue()
+                ? commandCode.getRequestClass()
+                : commandCode.getResponseClass();
         return serializer.deserialize(decompressedBytes, clazz);
     }
 

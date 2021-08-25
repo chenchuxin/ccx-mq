@@ -28,9 +28,9 @@ public class Command {
     private byte commandType;
 
     /**
-     * 结果码
+     * 命令码，具体的命令编码
      */
-    private int code;
+    private int commandCode;
 
     /**
      * 序列化器类型
