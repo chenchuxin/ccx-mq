@@ -41,6 +41,11 @@ import static com.ccx.mq.remoting.protocol.consts.CommandFrameConst.*;
  */
 public class CommandCodec {
 
+    public static final CommandCodec INSTANT = new CommandCodec();
+
+    private CommandCodec() {
+    }
+
     /**
      * 编码，并写到输出流
      *
