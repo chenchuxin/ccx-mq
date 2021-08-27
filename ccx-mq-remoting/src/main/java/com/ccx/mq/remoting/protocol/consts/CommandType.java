@@ -12,8 +12,21 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum CommandType {
+    /**
+     * 请求
+     */
     REQUEST((byte) 1),
-    RESPONSE((byte) 2);
+    /**
+     * 响应
+     */
+    RESPONSE((byte) 2),
+
+    /**
+     * 心跳
+     */
+    HEARTBEAT((byte) 3),
+    ;
+
     private final byte value;
 
     public static CommandType fromValue(byte value) {

@@ -1,6 +1,7 @@
 package com.ccx.mq.remoting.protocol.netty;
 
 import com.ccx.mq.remoting.protocol.Command;
+import com.ccx.mq.remoting.protocol.netty.processor.NettyProcessorManager;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.timeout.IdleState;
@@ -9,6 +10,8 @@ import io.netty.util.ReferenceCountUtil;
 import lombok.extern.slf4j.Slf4j;
 
 /**
+ * 服务器处理器
+ *
  * @author chenchuxin
  * @date 2021/8/26
  */
@@ -18,11 +21,10 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<Command> {
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, Command cmd) throws Exception {
         try {
-
+            NettyProcessorManager.INSTANT.processCommand(ctx, cmd);
         } finally {
             ReferenceCountUtil.release(cmd);
         }
-
     }
 
     @Override
