@@ -1,6 +1,7 @@
 package com.ccx.mq.remoting.protocol.body;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * 发送消息的响应
@@ -9,7 +10,8 @@ import lombok.Data;
  * @date 2021/8/24
  */
 @Data
-public class SendMsgResponse {
+@EqualsAndHashCode(callSuper = true)
+public class SendMsgResponse extends BaseResponse {
 
     /**
      * 偏移量

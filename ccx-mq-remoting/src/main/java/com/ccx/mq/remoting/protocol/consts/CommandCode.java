@@ -43,7 +43,7 @@ public enum CommandCode {
      */
     private final Class<?> responseClass;
 
-    public static CommandCode fromCode(byte value) {
+    public static CommandCode fromCode(int value) {
         for (CommandCode commandCode : CommandCode.values()) {
             if (commandCode.getCode() == value) {
                 return commandCode;

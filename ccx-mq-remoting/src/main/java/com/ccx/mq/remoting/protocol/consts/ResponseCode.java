@@ -1,8 +1,5 @@
 package com.ccx.mq.remoting.protocol.consts;
 
-import com.ccx.mq.remoting.protocol.body.PullMsgRequest;
-import com.ccx.mq.remoting.protocol.body.SendMsgRequest;
-import com.ccx.mq.remoting.protocol.body.UpdateOffsetRequest;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -15,28 +12,22 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum ResponseCode {
-    /**
-     * 发消息
-     */
-    SEND_MSG(1, SendMsgRequest.class),
 
     /**
-     * 拉取消息
+     * 成功
      */
-    PULL_MSG(2, PullMsgRequest.class),
+    SUCCESS(0, null),
+
+    TOPIC_NOT_VALID(1, "Topic 不合法"),
+    ;
 
     /**
-     * 更新偏移量
-     */
-    UPDATE_OFFSET(3, UpdateOffsetRequest.class);
-
-    /**
-     * 编码
+     * 响应码
      */
     private final int code;
 
     /**
-     * body 的 class 类型
+     * 备注
      */
-    private final Class<?> bodyClass;
+    private final String remark;
 }

@@ -20,32 +20,32 @@ public class Command {
     /**
      * 版本
      */
-    private byte version;
+    private Byte version;
 
     /**
      * 命令类型
      */
-    private byte commandType;
+    private Byte commandType;
 
     /**
      * 命令码，具体的命令编码
      */
-    private int commandCode;
+    private Integer commandCode;
 
     /**
      * 序列化器类型
      */
-    private byte serializerType;
+    private Byte serializerType;
 
     /**
      * 压缩器类型
      */
-    private byte compressorType;
+    private Byte compressorType;
 
     /**
      * 请求id
      */
-    private long requestId;
+    private Long requestId;
 
     /**
      * 命令数据体

@@ -2,6 +2,7 @@ package com.ccx.mq.remoting.protocol.netty.processor;
 
 import cn.hutool.json.JSONUtil;
 import com.ccx.mq.remoting.protocol.Command;
+import com.ccx.mq.remoting.protocol.consts.CommandFrameConst;
 import com.ccx.mq.remoting.protocol.consts.CommandType;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.extern.slf4j.Slf4j;
@@ -86,6 +87,10 @@ public class NettyProcessorManager {
             Command response = processor.process(ctx, request);
             response.setRequestId(request.getRequestId());
             response.setCommandType(CommandType.RESPONSE.getValue());
+            response.setCommandCode(request.getCommandCode());
+            response.setCompressorType(request.getCompressorType());
+            response.setSerializerType(request.getSerializerType());
+            response.setVersion(CommandFrameConst.VERSION);
             ctx.writeAndFlush(response);
         } catch (Throwable e) {
             log.error("process request error. cmd={}", request, e);
