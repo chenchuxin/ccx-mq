@@ -5,6 +5,9 @@ import io.netty.channel.ChannelHandlerContext;
 
 /**
  * 抽象异步处理器
+ *
+ * @author chenchuxin
+ * @date 2021/8/27
  */
 public abstract class AsyncNettyProcessor implements NettyProcessor {
 

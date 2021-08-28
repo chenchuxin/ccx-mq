@@ -12,32 +12,32 @@ import java.util.concurrent.locks.ReentrantLock;
  * @author chenchuxin
  * @date 2021/8/27
  */
-public class RAMMsgStore implements MsgStore {
+public class MemoryMsgStore implements MsgStore {
 
     /**
      * 存储。{topic: [StoreMsgInfo]}
      */
-    private static final Map<String, List<StoreMsgInfo>> store = new ConcurrentHashMap<>();
+    private static final Map<String, List<StoreMsgInfo>> STORE = new ConcurrentHashMap<>();
 
     /**
      * 写消息的锁
      */
-    private static final ReentrantLock putMsgLock = new ReentrantLock();
+    private static final ReentrantLock PUT_MSG_LOCK = new ReentrantLock();
 
     @Override
     public PutMsgResult putMessage(MsgInfo msgInfo) {
-        putMsgLock.lock();
+        PUT_MSG_LOCK.lock();
         try {
             String topic = msgInfo.getTopic();
-            if (!store.containsKey(topic)) {
-                store.put(topic, new ArrayList<>());
+            if (!STORE.containsKey(topic)) {
+                STORE.put(topic, new ArrayList<>());
             }
 
             // 拿到当前最大的offset。
             // 1. 如果当前有数据：从最后一条拿到 offset
             // 2. 如果没数据：当前最大 offset = 0
             int curMaxOffset;
-            List<StoreMsgInfo> storeMsgInfos = store.get(topic);
+            List<StoreMsgInfo> storeMsgInfos = STORE.get(topic);
             if (storeMsgInfos.size() == 0) {
                 curMaxOffset = 0;
             } else {
@@ -52,7 +52,7 @@ public class RAMMsgStore implements MsgStore {
             newStoreMsgInfo.setMsg(msgInfo.getMsg());
             storeMsgInfos.add(newStoreMsgInfo);
         } finally {
-            putMsgLock.unlock();
+            PUT_MSG_LOCK.unlock();
         }
         return PutMsgResult.builder().putMsgStatus(PutMsgStatus.SUCCESS).build();
     }
