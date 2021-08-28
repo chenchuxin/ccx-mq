@@ -8,6 +8,8 @@ import com.ccx.mq.remoting.protocol.serialize.Serializer;
 import com.ccx.mq.remoting.protocol.serialize.SerializerFactory;
 import io.netty.buffer.ByteBuf;
 
+import java.util.Optional;
+
 /**
  * 命令解码器，仅给 {@link CommandCodec} 用，外部的不要用这个类，所以这个类不 public
  *
@@ -56,7 +58,8 @@ class CommandEncoder {
         // 1B serialize（序列化类型）
         out.writeByte(cmd.getSerializerType());
         // 8B requestId（请求的Id）
-        out.writeLong(CommandFrameConst.REQUEST_ID.getAndIncrement());
+        Long requestId = Optional.ofNullable(cmd.getRequestId()).orElse(CommandFrameConst.REQUEST_ID.getAndIncrement());
+        out.writeLong(requestId);
 
         // 写 body，返回 body 长度
         int bodyLength = writeBody(cmd, out);

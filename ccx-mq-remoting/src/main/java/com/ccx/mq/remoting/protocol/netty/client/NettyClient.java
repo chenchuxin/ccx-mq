@@ -1,6 +1,11 @@
-package com.ccx.mq.remoting.protocol.netty;
+package com.ccx.mq.remoting.protocol.netty.client;
 
 import cn.hutool.core.util.StrUtil;
+import com.ccx.mq.remoting.protocol.Command;
+import com.ccx.mq.remoting.protocol.consts.*;
+import com.ccx.mq.remoting.protocol.netty.codec.NettyDecoder;
+import com.ccx.mq.remoting.protocol.netty.codec.NettyEncoder;
+import com.ccx.mq.remoting.protocol.netty.processor.NettyProcessorManager;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.epoll.Epoll;
@@ -35,12 +40,12 @@ public class NettyClient {
      */
     private static final Map<SocketAddress, Channel> CHANNEL_MAP = new ConcurrentHashMap<>();
 
-    private NettyClient() {
+    public NettyClient(NettyClientConfig config) {
         bootstrap = new Bootstrap()
                 .group(new NioEventLoopGroup())
                 .channel(Epoll.isAvailable() ? EpollSocketChannel.class : NioSocketChannel.class)
                 .handler(new LoggingHandler(LogLevel.INFO))
-                .option(ChannelOption.SO_KEEPALIVE, Boolean.TRUE)
+                .option(ChannelOption.SO_KEEPALIVE, config.isKeepAlive())
                 .option(ChannelOption.TCP_NODELAY, Boolean.TRUE)
                 .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5000)
                 .handler(new ChannelInitializer<SocketChannel>() {
@@ -71,6 +76,36 @@ public class NettyClient {
             CHANNEL_MAP.put(address, channel);
         }
         return channel;
+    }
+
+    /**
+     * 发请求
+     *
+     * @param channel 渠道
+     * @param body    消息体
+     */
+    public CompletableFuture<Command> request(Channel channel, Object body) {
+        Command requestCommand = new Command();
+        long requestId = CommandFrameConst.REQUEST_ID.getAndIncrement();
+        requestCommand.setRequestId(requestId);
+        requestCommand.setCommandCode(CommandCode.SEND_MSG.getCode());
+        requestCommand.setCommandType(CommandType.REQUEST.getValue());
+        requestCommand.setSerializerType(SerializeType.PROTOSTUFF.getValue());
+        requestCommand.setCompressorType(CompressType.GZIP.getValue());
+        requestCommand.setBody(body);
+
+        CompletableFuture<Command> resultFuture = new CompletableFuture<>();
+        NettyProcessorManager.INSTANT.putRequest(requestId, resultFuture);
+        channel.writeAndFlush(body).addListener((ChannelFutureListener) future -> {
+            if (future.isSuccess()) {
+                log.info("client send message: [{}]", body);
+            } else {
+                future.channel().close();
+                resultFuture.completeExceptionally(future.cause());
+                log.error("send failed:", future.cause());
+            }
+        });
+        return resultFuture;
     }
 
     /**

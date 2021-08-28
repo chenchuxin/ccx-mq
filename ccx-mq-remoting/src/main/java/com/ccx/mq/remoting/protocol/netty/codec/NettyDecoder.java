@@ -1,4 +1,4 @@
-package com.ccx.mq.remoting.protocol.netty;
+package com.ccx.mq.remoting.protocol.netty.codec;
 
 import com.ccx.mq.remoting.protocol.codec.CommandCodec;
 import io.netty.buffer.ByteBuf;

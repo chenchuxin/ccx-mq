@@ -11,5 +11,12 @@
 
     <artifactId>ccx-mq-client</artifactId>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.ccx</groupId>
+            <artifactId>ccx-mq-remoting</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
 
 </project>

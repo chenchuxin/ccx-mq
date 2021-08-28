@@ -28,12 +28,12 @@ public class NettyProcessorManager {
     /**
      * 处理器注册表。{命令码: 处理器}
      */
-    private static final Map<Integer, NettyProcessor> processorMap = new ConcurrentHashMap<>();
+    private static final Map<Integer, NettyProcessor> PROCESSOR_MAP = new ConcurrentHashMap<>();
 
     /**
      * 结果列表。{requestId: 处理结果}
      */
-    private static final Map<Long, CompletableFuture<Command>> futureMap = new ConcurrentHashMap<>();
+    private static final Map<Long, CompletableFuture<Command>> FUTURE_MAP = new ConcurrentHashMap<>();
 
     /**
      * 注册处理器
@@ -42,7 +42,17 @@ public class NettyProcessorManager {
      * @param processor   处理器
      */
     public void registerProcessor(int commandCode, NettyProcessor processor) {
-        processorMap.put(commandCode, processor);
+        PROCESSOR_MAP.put(commandCode, processor);
+    }
+
+    /**
+     * 加入请求
+     *
+     * @param requestId 请求 id
+     * @param future    结果等待
+     */
+    public void putRequest(long requestId, CompletableFuture<Command> future) {
+        FUTURE_MAP.put(requestId, future);
     }
 
     /**
@@ -67,7 +77,7 @@ public class NettyProcessorManager {
      * @return 处理器，如果获取不到，返回 null
      */
     private NettyProcessor getProcessor(int commandCode) {
-        return processorMap.get(commandCode);
+        return PROCESSOR_MAP.get(commandCode);
     }
 
     /**
@@ -104,7 +114,7 @@ public class NettyProcessorManager {
      * @param response 响应
      */
     private void processResponseCommand(ChannelHandlerContext ctx, Command response) {
-        CompletableFuture<Command> future = futureMap.remove(response.getRequestId());
+        CompletableFuture<Command> future = FUTURE_MAP.remove(response.getRequestId());
         if (future != null) {
             future.complete(response);
         } else {

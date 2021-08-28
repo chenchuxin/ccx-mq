@@ -1,8 +1,8 @@
 package com.ccx.mq.broker;
 
 import cn.hutool.setting.Setting;
-import com.ccx.mq.remoting.protocol.netty.NettyServer;
-import com.ccx.mq.remoting.protocol.netty.NettyServerConfig;
+import com.ccx.mq.remoting.protocol.netty.server.NettyServer;
+import com.ccx.mq.remoting.protocol.netty.server.NettyServerConfig;
 
 /**
  * broker 启动类

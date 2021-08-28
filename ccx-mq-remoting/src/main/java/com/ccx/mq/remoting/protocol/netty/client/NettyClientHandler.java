@@ -1,4 +1,4 @@
-package com.ccx.mq.remoting.protocol.netty;
+package com.ccx.mq.remoting.protocol.netty.client;
 
 import com.ccx.mq.remoting.protocol.Command;
 import com.ccx.mq.remoting.protocol.consts.CommandType;

@@ -1,4 +1,4 @@
-package com.ccx.mq.remoting.protocol.netty;
+package com.ccx.mq.remoting.protocol.netty.server;
 
 import com.ccx.mq.remoting.protocol.Command;
 import com.ccx.mq.remoting.protocol.netty.processor.NettyProcessorManager;
@@ -19,7 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 public class NettyServerHandler extends SimpleChannelInboundHandler<Command> {
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, Command cmd) throws Exception {
+    protected void channelRead0(ChannelHandlerContext ctx, Command cmd) {
         try {
             NettyProcessorManager.INSTANT.processCommand(ctx, cmd);
         } finally {
