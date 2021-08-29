@@ -24,6 +24,11 @@
             <groupId>io.protostuff</groupId>
             <artifactId>protostuff-runtime</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.ccx</groupId>
+            <artifactId>ccx-mq-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
 </project>

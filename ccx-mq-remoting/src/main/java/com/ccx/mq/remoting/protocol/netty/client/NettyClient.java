@@ -1,5 +1,6 @@
 package com.ccx.mq.remoting.protocol.netty.client;
 
+import com.ccx.mq.common.SingletonFactory;
 import com.ccx.mq.remoting.protocol.Command;
 import com.ccx.mq.remoting.protocol.consts.*;
 import com.ccx.mq.remoting.protocol.netty.codec.NettyDecoder;
@@ -33,6 +34,8 @@ import java.util.concurrent.TimeUnit;
 public class NettyClient {
 
     private final Bootstrap bootstrap;
+
+    private final NettyProcessorManager processorManager = SingletonFactory.getSingleton(NettyProcessorManager.class);
 
     /**
      * {地址：连接的channel}
@@ -94,7 +97,7 @@ public class NettyClient {
         requestCommand.setBody(body);
 
         CompletableFuture<Command> resultFuture = new CompletableFuture<>();
-        NettyProcessorManager.INSTANT.putRequest(requestId, resultFuture);
+        processorManager.putRequest(requestId, resultFuture);
         channel.writeAndFlush(requestCommand).addListener((ChannelFutureListener) future -> {
             if (future.isSuccess()) {
                 log.info("client send message: [{}]", body);

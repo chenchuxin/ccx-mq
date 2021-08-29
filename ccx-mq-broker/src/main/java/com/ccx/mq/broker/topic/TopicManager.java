@@ -1,7 +1,5 @@
 package com.ccx.mq.broker.topic;
 
-import cn.hutool.core.util.StrUtil;
-
 import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -15,11 +13,6 @@ import java.util.concurrent.ConcurrentHashMap;
 public class TopicManager {
 
     private static final Map<String, TopicInfo> topicMap = new ConcurrentHashMap<>();
-
-    public static final TopicManager INSTANT = new TopicManager();
-
-    private TopicManager() {
-    }
 
     /**
      * 如果需要，就创建

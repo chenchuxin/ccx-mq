@@ -1,9 +1,11 @@
 package com.ccx.mq.broker.msg;
 
 import com.ccx.mq.broker.offset.OffsetManager;
+import com.ccx.mq.common.SingletonFactory;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -18,11 +20,6 @@ import java.util.concurrent.locks.ReentrantLock;
 @Slf4j
 public class MemoryMsgStore implements MsgStore {
 
-    public static final MemoryMsgStore INSTANT = new MemoryMsgStore();
-
-    private MemoryMsgStore() {
-    }
-
     /**
      * 存储。{topic: [StoreMsgInfo]}
      */
@@ -33,20 +30,31 @@ public class MemoryMsgStore implements MsgStore {
      */
     private static final ReentrantLock PUT_MSG_LOCK = new ReentrantLock();
 
-    private OffsetManager offsetManager = new OffsetManager();
+    /**
+     * 偏移量管理类
+     */
+    private static final OffsetManager OFFSET_MANAGER = SingletonFactory.getSingleton(OffsetManager.class);
 
     /**
      * 拉取消息
      *
-     * @param topic
-     * @return
+     * @return 获取不到则返回空列表
      */
+    @Override
     public List<StoreMsgInfo> pullMessage(String topic) {
         List<StoreMsgInfo> storeMsgInfos = STORE.get(topic);
-        Long offset = offsetManager.getOffset(topic);
+        Long offset = OFFSET_MANAGER.getOffset(topic);
+        if (offset >= storeMsgInfos.size() - 1) {
+            return Collections.emptyList();
+        }
         return storeMsgInfos.subList((int) (offset + 1), storeMsgInfos.size());
     }
 
+    /**
+     * 写消息
+     *
+     * @param msgInfo 消息
+     */
     @Override
     public PutMsgResult putMessage(MsgInfo msgInfo) {
         PUT_MSG_LOCK.lock();

@@ -12,6 +12,13 @@ import lombok.Data;
 @Data
 @Builder
 public class PutMsgResult {
+    /**
+     * 写消息的状态
+     */
     private PutMsgStatus putMsgStatus;
+
+    /**
+     * 该消息的偏移量
+     */
     private long offset;
 }

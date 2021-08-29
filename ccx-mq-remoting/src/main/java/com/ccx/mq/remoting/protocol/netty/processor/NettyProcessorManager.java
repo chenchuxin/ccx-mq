@@ -20,11 +20,6 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 public class NettyProcessorManager {
 
-    public static final NettyProcessorManager INSTANT = new NettyProcessorManager();
-
-    private NettyProcessorManager() {
-    }
-
     /**
      * 处理器注册表。{命令码: 处理器}
      */

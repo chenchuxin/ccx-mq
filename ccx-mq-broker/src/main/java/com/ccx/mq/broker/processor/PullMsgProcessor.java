@@ -1,7 +1,9 @@
 package com.ccx.mq.broker.processor;
 
 import com.ccx.mq.broker.msg.MemoryMsgStore;
+import com.ccx.mq.broker.msg.MsgStore;
 import com.ccx.mq.broker.msg.StoreMsgInfo;
+import com.ccx.mq.common.SingletonFactory;
 import com.ccx.mq.remoting.protocol.Command;
 import com.ccx.mq.remoting.protocol.body.PullMsgRequest;
 import com.ccx.mq.remoting.protocol.body.PullMsgResponse;
@@ -19,12 +21,12 @@ import java.util.stream.Collectors;
  */
 public class PullMsgProcessor implements NettyProcessor {
 
-    private final MemoryMsgStore memoryMsgStore = MemoryMsgStore.INSTANT;
+    private final MsgStore msgStore = SingletonFactory.getSingleton(MemoryMsgStore.class);
 
     @Override
     public Command process(ChannelHandlerContext ctx, Command cmd) {
         PullMsgRequest request = (PullMsgRequest) cmd.getBody();
-        List<StoreMsgInfo> storeMsgInfos = memoryMsgStore.pullMessage(request.getTopic());
+        List<StoreMsgInfo> storeMsgInfos = msgStore.pullMessage(request.getTopic());
         PullMsgResponse response = new PullMsgResponse();
         List<String> msgList = storeMsgInfos.stream().map(StoreMsgInfo::getMsg).collect(Collectors.toList());
         response.setMessages(msgList);

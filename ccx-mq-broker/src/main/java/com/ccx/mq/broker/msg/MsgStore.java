@@ -1,5 +1,7 @@
 package com.ccx.mq.broker.msg;
 
+import java.util.List;
+
 /**
  * 消息存储
  *
@@ -15,4 +17,13 @@ public interface MsgStore {
      * @return 结果
      */
     PutMsgResult putMessage(MsgInfo msgInfo);
+
+    /**
+     * 拉消息
+     *
+     * @param topic 主题
+     * @return 获取不到则返回空列表
+     */
+    List<StoreMsgInfo> pullMessage(String topic);
+
 }
