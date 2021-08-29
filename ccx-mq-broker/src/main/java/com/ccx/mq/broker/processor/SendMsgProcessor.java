@@ -3,6 +3,7 @@ package com.ccx.mq.broker.processor;
 import cn.hutool.core.util.StrUtil;
 import com.ccx.mq.broker.msg.*;
 import com.ccx.mq.broker.topic.TopicManager;
+import com.ccx.mq.common.MsgInfo;
 import com.ccx.mq.common.SingletonFactory;
 import com.ccx.mq.remoting.protocol.Command;
 import com.ccx.mq.remoting.protocol.body.SendMsgRequest;

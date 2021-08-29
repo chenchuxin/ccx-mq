@@ -1,5 +1,6 @@
 package com.ccx.mq.remoting.protocol.body;
 
+import com.ccx.mq.common.ResponseMsgInfo;
 import lombok.Data;
 
 import java.util.List;
@@ -12,5 +13,5 @@ import java.util.List;
  */
 @Data
 public class PullMsgResponse {
-    private List<String> messages;
+    private List<ResponseMsgInfo> messages;
 }

@@ -1,4 +1,4 @@
-package com.ccx.mq.broker.msg;
+package com.ccx.mq.common;
 
 import lombok.Data;
 

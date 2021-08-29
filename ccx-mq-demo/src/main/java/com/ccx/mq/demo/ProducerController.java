@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.PostConstruct;
 
 /**
+ * 生产者控制器
+ *
  * @author chenchuxin
  * @date 2021/8/29
  */
@@ -25,6 +27,9 @@ public class ProducerController {
         producer.start();
     }
 
+    /**
+     * 发消息
+     */
     @GetMapping("send")
     public Command send(String topic, String msg) {
         if (msg == null) {

@@ -86,11 +86,11 @@ public class NettyClient {
      * @param channel 渠道
      * @param body    消息体
      */
-    public CompletableFuture<Command> request(Channel channel, Object body) {
+    public CompletableFuture<Command> request(Channel channel, Object body, CommandCode commandCode) {
         Command requestCommand = new Command();
         long requestId = CommandFrameConst.REQUEST_ID.getAndIncrement();
         requestCommand.setRequestId(requestId);
-        requestCommand.setCommandCode(CommandCode.SEND_MSG.getCode());
+        requestCommand.setCommandCode(commandCode.getCode());
         requestCommand.setCommandType(CommandType.REQUEST.getValue());
         requestCommand.setSerializerType(SerializeType.PROTOSTUFF.getValue());
         requestCommand.setCompressorType(CompressType.GZIP.getValue());

@@ -1,6 +1,8 @@
 package com.ccx.mq.broker.msg;
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.ccx.mq.broker.offset.OffsetManager;
+import com.ccx.mq.common.MsgInfo;
 import com.ccx.mq.common.SingletonFactory;
 import lombok.extern.slf4j.Slf4j;
 
@@ -41,13 +43,18 @@ public class MemoryMsgStore implements MsgStore {
      * @return 获取不到则返回空列表
      */
     @Override
-    public List<StoreMsgInfo> pullMessage(String topic) {
+    public List<StoreMsgInfo> pullMessage(String topic, int count) {
         List<StoreMsgInfo> storeMsgInfos = STORE.get(topic);
+        if (CollectionUtil.isEmpty(storeMsgInfos)) {
+            return Collections.emptyList();
+        }
         Long offset = OFFSET_MANAGER.getOffset(topic);
         if (offset >= storeMsgInfos.size() - 1) {
             return Collections.emptyList();
         }
-        return storeMsgInfos.subList((int) (offset + 1), storeMsgInfos.size());
+        int start = (int) (offset + 1);
+        int end = Math.min(storeMsgInfos.size(), start + count);
+        return storeMsgInfos.subList(start, end);
     }
 
     /**
@@ -67,7 +74,7 @@ public class MemoryMsgStore implements MsgStore {
             // 拿到当前最大的offset。
             // 1. 如果当前有数据：从最后一条拿到 offset
             // 2. 如果没数据：当前最大 offset = 0
-            int curMaxOffset;
+            long curMaxOffset;
             List<StoreMsgInfo> storeMsgInfos = STORE.get(topic);
             if (storeMsgInfos.size() == 0) {
                 curMaxOffset = 0;
@@ -76,7 +83,7 @@ public class MemoryMsgStore implements MsgStore {
                 curMaxOffset = lastMsg.getOffset();
             }
 
-            int offset = curMaxOffset + 1;
+            long offset = curMaxOffset + 1;
             StoreMsgInfo newStoreMsgInfo = new StoreMsgInfo();
             newStoreMsgInfo.setOffset(offset);
             newStoreMsgInfo.setTopic(msgInfo.getTopic());

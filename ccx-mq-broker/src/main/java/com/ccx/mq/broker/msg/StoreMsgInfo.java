@@ -10,7 +10,7 @@ import lombok.Data;
  */
 @Data
 public class StoreMsgInfo {
-    private int offset;
+    private Long offset;
     private String topic;
     private String msg;
 }
