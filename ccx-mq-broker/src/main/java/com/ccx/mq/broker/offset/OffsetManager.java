@@ -19,7 +19,7 @@ public class OffsetManager {
      * 获取 topic 的消费偏移量
      */
     public Long getOffset(String topic) {
-        return Optional.ofNullable(offsetMap.get(topic)).orElse(0L);
+        return Optional.ofNullable(offsetMap.get(topic)).orElse(-1L);
     }
 
     /**

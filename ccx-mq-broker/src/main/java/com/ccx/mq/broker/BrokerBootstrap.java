@@ -3,6 +3,7 @@ package com.ccx.mq.broker;
 import cn.hutool.setting.Setting;
 import com.ccx.mq.broker.processor.PullMsgProcessor;
 import com.ccx.mq.broker.processor.SendMsgProcessor;
+import com.ccx.mq.broker.processor.UpdateOffsetProcessor;
 import com.ccx.mq.common.SingletonFactory;
 import com.ccx.mq.remoting.protocol.consts.CommandCode;
 import com.ccx.mq.remoting.protocol.netty.processor.NettyProcessorManager;
@@ -21,10 +22,11 @@ public class BrokerBootstrap {
         //noinspection MismatchedQueryAndUpdateOfCollection
         Setting setting = new Setting("broker.conf");
 
-        NettyProcessorManager processorManager = SingletonFactory.getSingleton(NettyProcessorManager.class);
         // 注册 Processor
+        NettyProcessorManager processorManager = SingletonFactory.getSingleton(NettyProcessorManager.class);
         processorManager.registerProcessor(CommandCode.SEND_MSG.getCode(), new SendMsgProcessor());
         processorManager.registerProcessor(CommandCode.PULL_MSG.getCode(), new PullMsgProcessor());
+        processorManager.registerProcessor(CommandCode.UPDATE_OFFSET.getCode(), new UpdateOffsetProcessor());
 
         // 启动
         NettyServerConfig config = new NettyServerConfig();

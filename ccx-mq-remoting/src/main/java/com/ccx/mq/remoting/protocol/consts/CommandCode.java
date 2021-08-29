@@ -26,7 +26,7 @@ public enum CommandCode {
     /**
      * 更新偏移量
      */
-    UPDATE_OFFSET(3, UpdateOffsetRequest.class, EmptyResponse.class);
+    UPDATE_OFFSET(3, UpdateOffsetRequest.class, UpdateOffsetResponse.class);
 
     /**
      * 编码

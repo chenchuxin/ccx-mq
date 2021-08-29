@@ -4,6 +4,8 @@ import com.ccx.mq.common.ResponseMsgInfo;
 import com.ccx.mq.remoting.protocol.Command;
 import com.ccx.mq.remoting.protocol.body.PullMsgRequest;
 import com.ccx.mq.remoting.protocol.body.PullMsgResponse;
+import com.ccx.mq.remoting.protocol.body.UpdateOffsetRequest;
+import com.ccx.mq.remoting.protocol.body.UpdateOffsetResponse;
 import com.ccx.mq.remoting.protocol.consts.CommandCode;
 import com.ccx.mq.remoting.protocol.netty.client.NettyClient;
 import com.ccx.mq.remoting.protocol.netty.client.NettyClientConfig;
@@ -73,5 +75,30 @@ public class Consumer {
             log.error("pull error. topic={}, count={}", topic, count, e);
         }
         return Collections.emptyList();
+    }
+
+    /**
+     * 更新偏移量
+     *
+     * @param topic  主题
+     * @param offset 偏移量
+     * @return 响应码
+     */
+    public int updateOffset(String topic, long offset) {
+        UpdateOffsetRequest request = new UpdateOffsetRequest();
+        request.setTopic(topic);
+        request.setOffset(offset);
+        Channel channel = nettyClient.getChannel(brokerAddress);
+        CompletableFuture<Command> future = nettyClient.request(channel, request, CommandCode.UPDATE_OFFSET);
+        try {
+            Command responseCommand = future.get();
+            if (responseCommand != null) {
+                UpdateOffsetResponse pullMsgResponse = (UpdateOffsetResponse) responseCommand.getBody();
+                return pullMsgResponse.getCode();
+            }
+        } catch (InterruptedException | ExecutionException e) {
+            log.error("pull error. topic={}, offset={}", topic, offset, e);
+        }
+        return 0;
     }
 }

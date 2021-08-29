@@ -49,12 +49,30 @@ public class MemoryMsgStore implements MsgStore {
             return Collections.emptyList();
         }
         Long offset = OFFSET_MANAGER.getOffset(topic);
-        if (offset >= storeMsgInfos.size() - 1) {
-            return Collections.emptyList();
-        }
-        int start = (int) (offset + 1);
+        int start = Math.max(0, getMsgInfoByOffset(offset + 1, storeMsgInfos));
         int end = Math.min(storeMsgInfos.size(), start + count);
         return storeMsgInfos.subList(start, end);
+    }
+
+    /**
+     * 通过偏移量找到对应的消息索引(对应的offset如果不存在消息，则拿刚好比offset大的最近一条)
+     */
+    private int getMsgInfoByOffset(long offset, List<StoreMsgInfo> storeMsgInfos) {
+        int left = 0;
+        int right = storeMsgInfos.size() - 1;
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
+            StoreMsgInfo midMsg = storeMsgInfos.get(mid);
+            if (midMsg.getOffset() == offset) {
+                return mid;
+            }
+            if (midMsg.getOffset() < offset) {
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+        return right + 1;
     }
 
     /**

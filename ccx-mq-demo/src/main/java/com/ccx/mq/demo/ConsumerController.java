@@ -38,4 +38,12 @@ public class ConsumerController {
                                       @RequestParam(defaultValue = "10") Integer count) {
         return consumer.pull(topic, count);
     }
+
+    /**
+     * 更新偏移量
+     */
+    @GetMapping("updateOffset")
+    public int updateOffset(@RequestParam(defaultValue = "my_topic") String topic, Long offset) {
+        return consumer.updateOffset(topic, offset);
+    }
 }
