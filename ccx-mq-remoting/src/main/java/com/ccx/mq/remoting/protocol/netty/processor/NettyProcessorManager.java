@@ -94,14 +94,14 @@ public class NettyProcessorManager {
         }
 
         try {
-            Command response = processor.process(ctx, request);
-            response.setRequestId(request.getRequestId());
-            response.setCommandType(CommandType.RESPONSE.getValue());
-            response.setCommandCode(request.getCommandCode());
-            response.setCompressorType(request.getCompressorType());
-            response.setSerializerType(request.getSerializerType());
-            response.setVersion(CommandFrameConst.VERSION);
-            ctx.writeAndFlush(response);
+            Command responseCommand = processor.process(ctx, request);
+            responseCommand.setRequestId(request.getRequestId());
+            responseCommand.setCommandType(CommandType.RESPONSE.getValue());
+            responseCommand.setCommandCode(request.getCommandCode());
+            responseCommand.setCompressorType(request.getCompressorType());
+            responseCommand.setSerializerType(request.getSerializerType());
+            responseCommand.setVersion(CommandFrameConst.VERSION);
+            ctx.writeAndFlush(responseCommand);
         } catch (Throwable e) {
             log.error("process request error. cmd={}", request, e);
         }

@@ -1,6 +1,10 @@
 package com.ccx.mq.broker.processor;
 
 import cn.hutool.core.util.StrUtil;
+import com.ccx.mq.broker.msg.MemoryMsgStore;
+import com.ccx.mq.broker.msg.MsgInfo;
+import com.ccx.mq.broker.msg.PutMsgResult;
+import com.ccx.mq.broker.msg.PutMsgStatus;
 import com.ccx.mq.broker.topic.TopicManager;
 import com.ccx.mq.remoting.protocol.Command;
 import com.ccx.mq.remoting.protocol.body.SendMsgRequest;
@@ -18,8 +22,10 @@ import io.netty.channel.ChannelHandlerContext;
  */
 public class SendMsgProcessor implements NettyProcessor {
 
+    private final MemoryMsgStore memoryMsgStore = new MemoryMsgStore();
+
     @Override
-    public Command process(ChannelHandlerContext ctx, Command cmd) throws Exception {
+    public Command process(ChannelHandlerContext ctx, Command cmd) {
         CommandCode commandCode = CommandCode.fromCode(cmd.getCommandCode());
         if (commandCode == null) {
             throw new IllegalStateException("Unknown commandCode:" + cmd.getCommandCode());
@@ -33,7 +39,15 @@ public class SendMsgProcessor implements NettyProcessor {
             return Command.builder().body(response).build();
         }
         TopicManager.INSTANT.createIfNeed(topic);
-        sendMsgRequest.getMessage();
+        String message = sendMsgRequest.getMessage();
+        final MsgInfo msgInfo = new MsgInfo();
+        msgInfo.setTopic(topic);
+        msgInfo.setMsg(message);
+        PutMsgResult putMsgResult = memoryMsgStore.putMessage(msgInfo);
+        response.setOffset(putMsgResult.getOffset());
+        if (putMsgResult.getPutMsgStatus() == PutMsgStatus.SUCCESS) {
+            return Command.builder().body(response).build();
+        }
         return null;
     }
 }

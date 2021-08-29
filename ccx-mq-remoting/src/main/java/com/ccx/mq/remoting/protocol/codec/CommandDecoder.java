@@ -14,12 +14,12 @@ import java.util.Arrays;
 import static com.ccx.mq.remoting.protocol.consts.CommandFrameConst.*;
 
 /**
- * 命令解码器，仅给 {@link CommandCodec} 用，外部的不要用这个类，所以这个类不 public
+ * 命令解码器
  *
  * @author chenchuxin
  * @date 2021/8/25
  */
-class CommandDecoder {
+public class CommandDecoder {
 
     public static final CommandDecoder INSTANT = new CommandDecoder();
 
@@ -32,7 +32,7 @@ class CommandDecoder {
      * @param in 字节流
      * @return 命令对象
      */
-    Command decode(ByteBuf in) {
+    public Command decode(ByteBuf in) {
         readAndCheckMagic(in);
         byte version = in.readByte();
         int fullLength = in.readInt();
@@ -71,10 +71,12 @@ class CommandDecoder {
 
         // 解压
         Compressor compressor = CompressorFactory.getCompressor(cmd.getCompressorType());
+        byte[] decompressedBytes;
         if (compressor == null) {
-            throw new IllegalArgumentException("unknown compress type:" + cmd.getCompressorType());
+            decompressedBytes = bodyBytes;
+        } else {
+            decompressedBytes = compressor.decompress(bodyBytes);
         }
-        byte[] decompressedBytes = compressor.decompress(bodyBytes);
 
         // 反序列化
         Serializer serializer = SerializerFactory.getSerializer(cmd.getSerializerType());
@@ -82,7 +84,7 @@ class CommandDecoder {
             throw new IllegalArgumentException("unknown serializer type:" + cmd.getSerializerType());
         }
 
-        CommandCode commandCode = CommandCode.fromCode(cmd.getCommandType());
+        CommandCode commandCode = CommandCode.fromCode(cmd.getCommandCode());
         if (commandCode == null) {
             throw new IllegalArgumentException("unknown command type:" + cmd.getCommandType());
         }

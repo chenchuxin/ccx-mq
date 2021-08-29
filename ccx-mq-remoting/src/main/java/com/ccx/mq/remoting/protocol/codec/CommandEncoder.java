@@ -11,12 +11,12 @@ import io.netty.buffer.ByteBuf;
 import java.util.Optional;
 
 /**
- * 命令解码器，仅给 {@link CommandCodec} 用，外部的不要用这个类，所以这个类不 public
+ * 命令解码器
  *
  * @author chenchuxin
  * @date 2021/8/25
  */
-class CommandEncoder {
+public class CommandEncoder {
 
     public static final CommandEncoder INSTANT = new CommandEncoder();
 
@@ -29,7 +29,7 @@ class CommandEncoder {
      * @param cmd 命令
      * @param out 输出流
      */
-    void encode(Command cmd, ByteBuf out) {
+    public void encode(Command cmd, ByteBuf out) {
         /*
          * 消息格式：
          * 2B magic（魔法数）
@@ -86,16 +86,19 @@ class CommandEncoder {
             throw new IllegalArgumentException("unknown serializer type:" + cmd.getSerializerType());
         }
 
-        // 压缩器
-        Compressor compressor = CompressorFactory.getCompressor(cmd.getCompressorType());
-        if (compressor == null) {
-            throw new IllegalArgumentException("unknown compress type:" + cmd.getCompressorType());
-        }
-
         // 序列化
         byte[] serializeBytes = serializer.serialize(cmd.getBody());
-        // 压缩
-        byte[] compressedBytes = compressor.compress(serializeBytes);
+
+        // 压缩器
+        Compressor compressor = CompressorFactory.getCompressor(cmd.getCompressorType());
+        byte[] compressedBytes;
+        if (compressor != null) {
+            // 压缩
+            compressedBytes = compressor.compress(serializeBytes);
+        } else {
+            // 没有压缩器就不压缩了
+            compressedBytes = serializeBytes;
+        }
 
         // 写 body
         out.writeBytes(compressedBytes);

@@ -1,6 +1,5 @@
 package com.ccx.mq.broker.msg;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
@@ -14,4 +13,5 @@ import lombok.Data;
 @Builder
 public class PutMsgResult {
     private PutMsgStatus putMsgStatus;
+    private long offset;
 }

@@ -11,5 +11,10 @@ public enum PutMsgStatus {
      * 成功
      */
     SUCCESS,
+
+    /**
+     * 失败
+     */
+    FAIL,
     ;
 }

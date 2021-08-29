@@ -1,6 +1,6 @@
 package com.ccx.mq.remoting.protocol.netty.codec;
 
-import com.ccx.mq.remoting.protocol.codec.CommandCodec;
+import com.ccx.mq.remoting.protocol.codec.CommandDecoder;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
@@ -30,7 +30,7 @@ public class NettyDecoder extends LengthFieldBasedFrameDecoder {
             ByteBuf frame = (ByteBuf) decoded;
             if (frame.readableBytes() >= HEADER_LENGTH) {
                 try {
-                    return CommandCodec.INSTANT.decode(frame);
+                    return CommandDecoder.INSTANT.decode(frame);
                 } catch (Exception ex) {
                     log.error("Decode frame error.", ex);
                 } finally {

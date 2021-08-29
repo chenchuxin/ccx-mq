@@ -1,6 +1,5 @@
 package com.ccx.mq.remoting.protocol.netty.client;
 
-import cn.hutool.core.util.StrUtil;
 import com.ccx.mq.remoting.protocol.Command;
 import com.ccx.mq.remoting.protocol.consts.*;
 import com.ccx.mq.remoting.protocol.netty.codec.NettyDecoder;
@@ -96,7 +95,7 @@ public class NettyClient {
 
         CompletableFuture<Command> resultFuture = new CompletableFuture<>();
         NettyProcessorManager.INSTANT.putRequest(requestId, resultFuture);
-        channel.writeAndFlush(body).addListener((ChannelFutureListener) future -> {
+        channel.writeAndFlush(requestCommand).addListener((ChannelFutureListener) future -> {
             if (future.isSuccess()) {
                 log.info("client send message: [{}]", body);
             } else {
@@ -122,7 +121,7 @@ public class NettyClient {
                 if (future.isSuccess()) {
                     completableFuture.complete(future.channel());
                 } else {
-                    throw new IllegalStateException(StrUtil.format("connect fail. address:", address));
+                    throw new IllegalStateException("connect fail. address:" + address);
                 }
             });
             return completableFuture.get(10, TimeUnit.SECONDS);

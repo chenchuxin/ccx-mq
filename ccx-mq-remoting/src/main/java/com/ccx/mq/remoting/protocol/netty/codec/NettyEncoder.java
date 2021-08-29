@@ -1,7 +1,7 @@
 package com.ccx.mq.remoting.protocol.netty.codec;
 
 import com.ccx.mq.remoting.protocol.Command;
-import com.ccx.mq.remoting.protocol.codec.CommandCodec;
+import com.ccx.mq.remoting.protocol.codec.CommandEncoder;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
@@ -16,6 +16,6 @@ public class NettyEncoder extends MessageToByteEncoder<Command> {
 
     @Override
     protected void encode(ChannelHandlerContext ctx, Command cmd, ByteBuf out) {
-        CommandCodec.INSTANT.encode(cmd, out);
+        CommandEncoder.INSTANT.encode(cmd, out);
     }
 }
