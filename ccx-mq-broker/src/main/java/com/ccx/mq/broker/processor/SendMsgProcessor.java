@@ -22,7 +22,7 @@ import io.netty.channel.ChannelHandlerContext;
  */
 public class SendMsgProcessor implements NettyProcessor {
 
-    private final MemoryMsgStore memoryMsgStore = new MemoryMsgStore();
+    private final MemoryMsgStore memoryMsgStore = MemoryMsgStore.INSTANT;
 
     @Override
     public Command process(ChannelHandlerContext ctx, Command cmd) {

@@ -1,5 +1,6 @@
 package com.ccx.mq.broker.msg;
 
+import com.ccx.mq.broker.offset.OffsetManager;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
@@ -17,6 +18,11 @@ import java.util.concurrent.locks.ReentrantLock;
 @Slf4j
 public class MemoryMsgStore implements MsgStore {
 
+    public static final MemoryMsgStore INSTANT = new MemoryMsgStore();
+
+    private MemoryMsgStore() {
+    }
+
     /**
      * 存储。{topic: [StoreMsgInfo]}
      */
@@ -26,6 +32,20 @@ public class MemoryMsgStore implements MsgStore {
      * 写消息的锁
      */
     private static final ReentrantLock PUT_MSG_LOCK = new ReentrantLock();
+
+    private OffsetManager offsetManager = new OffsetManager();
+
+    /**
+     * 拉取消息
+     *
+     * @param topic
+     * @return
+     */
+    public List<StoreMsgInfo> pullMessage(String topic) {
+        List<StoreMsgInfo> storeMsgInfos = STORE.get(topic);
+        Long offset = offsetManager.getOffset(topic);
+        return storeMsgInfos.subList((int) (offset + 1), storeMsgInfos.size());
+    }
 
     @Override
     public PutMsgResult putMessage(MsgInfo msgInfo) {
