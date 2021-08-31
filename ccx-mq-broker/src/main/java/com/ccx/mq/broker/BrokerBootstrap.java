@@ -23,7 +23,7 @@ public class BrokerBootstrap {
         Setting setting = new Setting("broker.conf");
 
         // 注册 Processor
-        NettyProcessorManager processorManager = SingletonFactory.getSingleton(NettyProcessorManager.class);
+        NettyProcessorManager processorManager = new NettyProcessorManager();
         processorManager.registerProcessor(CommandCode.SEND_MSG.getCode(), new SendMsgProcessor());
         processorManager.registerProcessor(CommandCode.PULL_MSG.getCode(), new PullMsgProcessor());
         processorManager.registerProcessor(CommandCode.UPDATE_OFFSET.getCode(), new UpdateOffsetProcessor());

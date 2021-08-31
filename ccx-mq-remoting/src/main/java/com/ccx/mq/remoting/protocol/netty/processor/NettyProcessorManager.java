@@ -1,6 +1,5 @@
 package com.ccx.mq.remoting.protocol.netty.processor;
 
-import cn.hutool.json.JSONUtil;
 import com.ccx.mq.remoting.protocol.Command;
 import com.ccx.mq.remoting.protocol.consts.CommandFrameConst;
 import com.ccx.mq.remoting.protocol.consts.CommandType;
@@ -8,7 +7,6 @@ import io.netty.channel.ChannelHandlerContext;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -26,11 +24,6 @@ public class NettyProcessorManager {
     private static final Map<Integer, NettyProcessor> PROCESSOR_MAP = new ConcurrentHashMap<>();
 
     /**
-     * 结果列表。{requestId: 处理结果}
-     */
-    private static final Map<Long, CompletableFuture<Command>> FUTURE_MAP = new ConcurrentHashMap<>();
-
-    /**
      * 注册处理器
      *
      * @param commandCode 命令码
@@ -38,31 +31,6 @@ public class NettyProcessorManager {
      */
     public void registerProcessor(int commandCode, NettyProcessor processor) {
         PROCESSOR_MAP.put(commandCode, processor);
-    }
-
-    /**
-     * 加入请求
-     *
-     * @param requestId 请求 id
-     * @param future    结果等待
-     */
-    public void putRequest(long requestId, CompletableFuture<Command> future) {
-        FUTURE_MAP.put(requestId, future);
-    }
-
-    /**
-     * 处理命令。会根据命令是请求或者响应来处理
-     *
-     * @param ctx 上下文
-     * @param cmd 命令
-     */
-    public void processCommand(ChannelHandlerContext ctx, Command cmd) {
-        if (cmd.getCommandType() == CommandType.REQUEST.getValue()) {
-            processRequestCommand(ctx, cmd);
-        } else if (cmd.getCommandType() == CommandType.RESPONSE.getValue()) {
-            processResponseCommand(ctx, cmd);
-        }
-        // 心跳类型不管
     }
 
     /**
@@ -76,12 +44,12 @@ public class NettyProcessorManager {
     }
 
     /**
-     * 处理请求命令
+     * 处理命令
      *
      * @param ctx     上下文
      * @param request 请求命令
      */
-    private void processRequestCommand(ChannelHandlerContext ctx, Command request) {
+    public void process(ChannelHandlerContext ctx, Command request) {
         // 从注册表中拿到对应的处理器
         NettyProcessor processor = getProcessor(request.getCommandCode());
         if (processor == null) {
@@ -99,21 +67,6 @@ public class NettyProcessorManager {
             ctx.writeAndFlush(responseCommand);
         } catch (Throwable e) {
             log.error("process request error. cmd={}", request, e);
-        }
-    }
-
-    /**
-     * 处理响应命令
-     *
-     * @param ctx      上下文
-     * @param response 响应
-     */
-    private void processResponseCommand(ChannelHandlerContext ctx, Command response) {
-        CompletableFuture<Command> future = FUTURE_MAP.remove(response.getRequestId());
-        if (future != null) {
-            future.complete(response);
-        } else {
-            log.warn("Process response command error. address:{}, response:{}", ctx.channel().remoteAddress(), JSONUtil.toJsonStr(response));
         }
     }
 }

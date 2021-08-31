@@ -1,6 +1,5 @@
 package com.ccx.mq.remoting.protocol.netty.client;
 
-import com.ccx.mq.common.SingletonFactory;
 import com.ccx.mq.remoting.protocol.Command;
 import com.ccx.mq.remoting.protocol.consts.*;
 import com.ccx.mq.remoting.protocol.netty.codec.NettyDecoder;
@@ -16,6 +15,7 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import io.netty.handler.timeout.IdleStateHandler;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.net.SocketAddress;
@@ -35,12 +35,12 @@ public class NettyClient {
 
     private final Bootstrap bootstrap;
 
-    private final NettyProcessorManager processorManager = SingletonFactory.getSingleton(NettyProcessorManager.class);
-
     /**
      * {地址：连接的channel}
      */
     private static final Map<SocketAddress, Channel> CHANNEL_MAP = new ConcurrentHashMap<>();
+
+    private final NettyClientHandler clientHandler = new NettyClientHandler();
 
     public NettyClient(NettyClientConfig config) {
         bootstrap = new Bootstrap()
@@ -60,9 +60,16 @@ public class NettyClient {
                         // 编解码器
                         p.addLast(new NettyEncoder());
                         p.addLast(new NettyDecoder());
-                        p.addLast(new NettyClientHandler());
+                        p.addLast(clientHandler);
                     }
                 });
+    }
+
+    /**
+     * 发起请求
+     */
+    public CompletableFuture<Command> request(Channel channel, Object body, CommandCode commandCode) {
+        return clientHandler.request(channel, body, commandCode);
     }
 
     /**
@@ -78,36 +85,6 @@ public class NettyClient {
             CHANNEL_MAP.put(address, channel);
         }
         return channel;
-    }
-
-    /**
-     * 发请求
-     *
-     * @param channel 渠道
-     * @param body    消息体
-     */
-    public CompletableFuture<Command> request(Channel channel, Object body, CommandCode commandCode) {
-        Command requestCommand = new Command();
-        long requestId = CommandFrameConst.REQUEST_ID.getAndIncrement();
-        requestCommand.setRequestId(requestId);
-        requestCommand.setCommandCode(commandCode.getCode());
-        requestCommand.setCommandType(CommandType.REQUEST.getValue());
-        requestCommand.setSerializerType(SerializeType.PROTOSTUFF.getValue());
-        requestCommand.setCompressorType(CompressType.GZIP.getValue());
-        requestCommand.setBody(body);
-
-        CompletableFuture<Command> resultFuture = new CompletableFuture<>();
-        processorManager.putRequest(requestId, resultFuture);
-        channel.writeAndFlush(requestCommand).addListener((ChannelFutureListener) future -> {
-            if (future.isSuccess()) {
-                log.info("client send message: [{}]", body);
-            } else {
-                future.channel().close();
-                resultFuture.completeExceptionally(future.cause());
-                log.error("send failed:", future.cause());
-            }
-        });
-        return resultFuture;
     }
 
     /**

@@ -1,7 +1,7 @@
 package com.ccx.mq.remoting.protocol.netty.server;
 
-import com.ccx.mq.common.SingletonFactory;
 import com.ccx.mq.remoting.protocol.Command;
+import com.ccx.mq.remoting.protocol.consts.CommandType;
 import com.ccx.mq.remoting.protocol.netty.processor.NettyProcessorManager;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -19,12 +19,14 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class NettyServerHandler extends SimpleChannelInboundHandler<Command> {
 
-    private final NettyProcessorManager processorManager = SingletonFactory.getSingleton(NettyProcessorManager.class);
+    private final NettyProcessorManager processorManager = new NettyProcessorManager();
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, Command cmd) {
         try {
-            processorManager.processCommand(ctx, cmd);
+            if (cmd.getCommandType() == CommandType.REQUEST.getValue()) {
+                processorManager.process(ctx, cmd);
+            }
         } finally {
             ReferenceCountUtil.release(cmd);
         }

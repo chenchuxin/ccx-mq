@@ -37,12 +37,15 @@ public class CommandDecoder {
         byte version = in.readByte();
         int fullLength = in.readInt();
         byte commandType = in.readByte();
+        Command.CommandBuilder cmdBuilder = Command.builder().version(version).commandType(commandType);
+        if (commandType == CommandType.HEARTBEAT.getValue()) {
+            return cmdBuilder.build();
+        }
         int code = in.readInt();
         byte compressorType = in.readByte();
         byte serializerType = in.readByte();
         long requestId = in.readLong();
-        Command cmd = Command.builder().version(version)
-                .commandType(commandType).commandCode(code)
+        Command cmd = cmdBuilder.commandCode(code)
                 .compressorType(compressorType)
                 .serializerType(serializerType)
                 .requestId(requestId)

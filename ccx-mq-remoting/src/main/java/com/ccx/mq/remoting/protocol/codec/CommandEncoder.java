@@ -4,11 +4,14 @@ import com.ccx.mq.remoting.protocol.Command;
 import com.ccx.mq.remoting.protocol.compress.Compressor;
 import com.ccx.mq.remoting.protocol.compress.CompressorFactory;
 import com.ccx.mq.remoting.protocol.consts.CommandFrameConst;
+import com.ccx.mq.remoting.protocol.consts.CommandType;
 import com.ccx.mq.remoting.protocol.serialize.Serializer;
 import com.ccx.mq.remoting.protocol.serialize.SerializerFactory;
 import io.netty.buffer.ByteBuf;
 
 import java.util.Optional;
+
+import static com.ccx.mq.remoting.protocol.consts.CommandFrameConst.*;
 
 /**
  * 命令解码器
@@ -44,11 +47,11 @@ public class CommandEncoder {
          */
 
         // 2B magic code（魔法数）
-        out.writeBytes(CommandFrameConst.MAGIC);
+        out.writeBytes(MAGIC);
         // 1B version（版本）
-        out.writeByte(CommandFrameConst.VERSION);
+        out.writeByte(VERSION);
         // 4B full length（消息长度）. 总长度先空着，后面填。
-        out.writerIndex(out.writerIndex() + CommandFrameConst.FULL_LENGTH_LENGTH);
+        out.writerIndex(out.writerIndex() + FULL_LENGTH_LENGTH);
         // 1B commandType（消息类型）
         out.writeByte(cmd.getCommandType());
         // 4B commandCode (请求标识/响应码)
@@ -57,8 +60,8 @@ public class CommandEncoder {
         out.writeByte(cmd.getCompressorType());
         // 1B serialize（序列化类型）
         out.writeByte(cmd.getSerializerType());
-        // 8B requestId（请求的Id）
-        Long requestId = Optional.ofNullable(cmd.getRequestId()).orElse(CommandFrameConst.REQUEST_ID.getAndIncrement());
+        // 8B requestId（请求的Id）, 心跳不需要，因为服务端不管的
+        long requestId = cmd.getCommandType() == CommandType.HEARTBEAT.getValue() ? 0L : REQUEST_ID.getAndIncrement();
         out.writeLong(requestId);
 
         // 写 body，返回 body 长度
@@ -66,9 +69,9 @@ public class CommandEncoder {
 
         // 当前写指针
         int writerIndex = out.writerIndex();
-        out.writerIndex(CommandFrameConst.MAGIC_LENGTH + CommandFrameConst.VERSION_LENGTH);
+        out.writerIndex(MAGIC_LENGTH + VERSION_LENGTH);
         // 4B full length（消息长度）
-        out.writeInt(CommandFrameConst.HEADER_LENGTH + bodyLength);
+        out.writeInt(HEADER_LENGTH + bodyLength);
         // 写指针复原
         out.writerIndex(writerIndex);
     }
@@ -79,6 +82,9 @@ public class CommandEncoder {
      * @return body 长度
      */
     private int writeBody(Command cmd, ByteBuf out) {
+        if (cmd.getBody() == null) {
+            return 0;
+        }
 
         // 序列化器
         Serializer serializer = SerializerFactory.getSerializer(cmd.getSerializerType());
