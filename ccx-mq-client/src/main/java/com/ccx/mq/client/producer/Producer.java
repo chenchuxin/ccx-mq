@@ -1,10 +1,10 @@
 package com.ccx.mq.client.producer;
 
+import com.ccx.mq.remoting.consts.CommandCode;
+import com.ccx.mq.remoting.netty.client.NettyClient;
+import com.ccx.mq.remoting.netty.client.NettyClientConfig;
 import com.ccx.mq.remoting.protocol.Command;
 import com.ccx.mq.remoting.protocol.body.SendMsgRequest;
-import com.ccx.mq.remoting.protocol.consts.CommandCode;
-import com.ccx.mq.remoting.protocol.netty.client.NettyClient;
-import com.ccx.mq.remoting.protocol.netty.client.NettyClientConfig;
 import io.netty.channel.Channel;
 import lombok.extern.slf4j.Slf4j;
 

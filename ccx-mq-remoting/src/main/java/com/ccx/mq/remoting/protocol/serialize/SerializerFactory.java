@@ -1,7 +1,7 @@
 package com.ccx.mq.remoting.protocol.serialize;
 
 import cn.hutool.core.map.MapBuilder;
-import com.ccx.mq.remoting.protocol.consts.SerializeType;
+import com.ccx.mq.remoting.consts.SerializeType;
 
 import java.util.Map;
 

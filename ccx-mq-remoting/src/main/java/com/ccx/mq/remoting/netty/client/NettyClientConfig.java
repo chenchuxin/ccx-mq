@@ -1,4 +1,4 @@
-package com.ccx.mq.remoting.protocol.netty.client;
+package com.ccx.mq.remoting.netty.client;
 
 import lombok.Data;
 

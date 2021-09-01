@@ -1,10 +1,10 @@
-package com.ccx.mq.remoting.protocol.netty.client;
+package com.ccx.mq.remoting.netty.client;
 
+import com.ccx.mq.remoting.consts.CommandCode;
+import com.ccx.mq.remoting.consts.CommandType;
+import com.ccx.mq.remoting.consts.CompressType;
+import com.ccx.mq.remoting.consts.SerializeType;
 import com.ccx.mq.remoting.protocol.Command;
-import com.ccx.mq.remoting.protocol.consts.CommandCode;
-import com.ccx.mq.remoting.protocol.consts.CommandType;
-import com.ccx.mq.remoting.protocol.consts.CompressType;
-import com.ccx.mq.remoting.protocol.consts.SerializeType;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;

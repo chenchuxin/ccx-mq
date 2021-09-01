@@ -1,10 +1,9 @@
-package com.ccx.mq.remoting.protocol.netty.client;
+package com.ccx.mq.remoting.netty.client;
 
+import com.ccx.mq.remoting.consts.CommandCode;
+import com.ccx.mq.remoting.netty.codec.NettyDecoder;
+import com.ccx.mq.remoting.netty.codec.NettyEncoder;
 import com.ccx.mq.remoting.protocol.Command;
-import com.ccx.mq.remoting.protocol.consts.*;
-import com.ccx.mq.remoting.protocol.netty.codec.NettyDecoder;
-import com.ccx.mq.remoting.protocol.netty.codec.NettyEncoder;
-import com.ccx.mq.remoting.protocol.netty.processor.NettyProcessorManager;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.epoll.Epoll;
@@ -15,7 +14,6 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import io.netty.handler.timeout.IdleStateHandler;
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.net.SocketAddress;

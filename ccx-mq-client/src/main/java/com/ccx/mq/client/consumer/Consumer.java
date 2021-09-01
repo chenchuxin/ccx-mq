@@ -1,14 +1,14 @@
 package com.ccx.mq.client.consumer;
 
 import com.ccx.mq.common.ResponseMsgInfo;
+import com.ccx.mq.remoting.consts.CommandCode;
+import com.ccx.mq.remoting.netty.client.NettyClient;
+import com.ccx.mq.remoting.netty.client.NettyClientConfig;
 import com.ccx.mq.remoting.protocol.Command;
 import com.ccx.mq.remoting.protocol.body.PullMsgRequest;
 import com.ccx.mq.remoting.protocol.body.PullMsgResponse;
 import com.ccx.mq.remoting.protocol.body.UpdateOffsetRequest;
 import com.ccx.mq.remoting.protocol.body.UpdateOffsetResponse;
-import com.ccx.mq.remoting.protocol.consts.CommandCode;
-import com.ccx.mq.remoting.protocol.netty.client.NettyClient;
-import com.ccx.mq.remoting.protocol.netty.client.NettyClientConfig;
 import io.netty.channel.Channel;
 import lombok.extern.slf4j.Slf4j;
 

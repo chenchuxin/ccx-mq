@@ -1,4 +1,4 @@
-package com.ccx.mq.remoting.protocol.consts;
+package com.ccx.mq.remoting.consts;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

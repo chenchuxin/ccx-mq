@@ -4,11 +4,10 @@ import cn.hutool.setting.Setting;
 import com.ccx.mq.broker.processor.PullMsgProcessor;
 import com.ccx.mq.broker.processor.SendMsgProcessor;
 import com.ccx.mq.broker.processor.UpdateOffsetProcessor;
-import com.ccx.mq.common.SingletonFactory;
-import com.ccx.mq.remoting.protocol.consts.CommandCode;
-import com.ccx.mq.remoting.protocol.netty.processor.NettyProcessorManager;
-import com.ccx.mq.remoting.protocol.netty.server.NettyServer;
-import com.ccx.mq.remoting.protocol.netty.server.NettyServerConfig;
+import com.ccx.mq.remoting.consts.CommandCode;
+import com.ccx.mq.remoting.netty.processor.NettyProcessorManager;
+import com.ccx.mq.remoting.netty.server.NettyServer;
+import com.ccx.mq.remoting.netty.server.NettyServerConfig;
 
 /**
  * broker 启动类

@@ -1,8 +1,8 @@
-package com.ccx.mq.remoting.protocol.netty.server;
+package com.ccx.mq.remoting.netty.server;
 
+import com.ccx.mq.remoting.consts.CommandType;
+import com.ccx.mq.remoting.netty.processor.NettyProcessorManager;
 import com.ccx.mq.remoting.protocol.Command;
-import com.ccx.mq.remoting.protocol.consts.CommandType;
-import com.ccx.mq.remoting.protocol.netty.processor.NettyProcessorManager;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.timeout.IdleState;

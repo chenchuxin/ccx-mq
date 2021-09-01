@@ -3,13 +3,12 @@ package com.ccx.mq.broker.processor;
 import com.ccx.mq.broker.msg.MemoryMsgStore;
 import com.ccx.mq.broker.msg.MsgStore;
 import com.ccx.mq.broker.msg.StoreMsgInfo;
-import com.ccx.mq.common.MsgInfo;
 import com.ccx.mq.common.ResponseMsgInfo;
 import com.ccx.mq.common.SingletonFactory;
+import com.ccx.mq.remoting.netty.processor.NettyProcessor;
 import com.ccx.mq.remoting.protocol.Command;
 import com.ccx.mq.remoting.protocol.body.PullMsgRequest;
 import com.ccx.mq.remoting.protocol.body.PullMsgResponse;
-import com.ccx.mq.remoting.protocol.netty.processor.NettyProcessor;
 import io.netty.channel.ChannelHandlerContext;
 
 import java.util.List;

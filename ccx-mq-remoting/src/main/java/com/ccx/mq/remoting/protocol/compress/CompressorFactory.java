@@ -1,7 +1,7 @@
 package com.ccx.mq.remoting.protocol.compress;
 
 import cn.hutool.core.map.MapBuilder;
-import com.ccx.mq.remoting.protocol.consts.CompressType;
+import com.ccx.mq.remoting.consts.CompressType;
 
 import java.util.Map;
 

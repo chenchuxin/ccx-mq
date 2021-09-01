@@ -2,11 +2,11 @@ package com.ccx.mq.broker.processor;
 
 import com.ccx.mq.broker.offset.OffsetManager;
 import com.ccx.mq.common.SingletonFactory;
+import com.ccx.mq.remoting.consts.CommandCode;
+import com.ccx.mq.remoting.netty.processor.NettyProcessor;
 import com.ccx.mq.remoting.protocol.Command;
 import com.ccx.mq.remoting.protocol.body.UpdateOffsetRequest;
 import com.ccx.mq.remoting.protocol.body.UpdateOffsetResponse;
-import com.ccx.mq.remoting.protocol.consts.CommandCode;
-import com.ccx.mq.remoting.protocol.netty.processor.NettyProcessor;
 import io.netty.channel.ChannelHandlerContext;
 
 /**

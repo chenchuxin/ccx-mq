@@ -1,4 +1,4 @@
-package com.ccx.mq.remoting.protocol.netty.processor;
+package com.ccx.mq.remoting.netty.processor;
 
 import com.ccx.mq.remoting.protocol.Command;
 import io.netty.channel.ChannelHandlerContext;

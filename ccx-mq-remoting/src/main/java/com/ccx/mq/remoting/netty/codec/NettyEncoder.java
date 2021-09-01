@@ -1,4 +1,4 @@
-package com.ccx.mq.remoting.protocol.netty.codec;
+package com.ccx.mq.remoting.netty.codec;
 
 import com.ccx.mq.remoting.protocol.Command;
 import com.ccx.mq.remoting.protocol.codec.CommandEncoder;

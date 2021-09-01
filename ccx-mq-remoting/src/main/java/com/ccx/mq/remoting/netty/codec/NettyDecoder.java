@@ -1,4 +1,4 @@
-package com.ccx.mq.remoting.protocol.netty.codec;
+package com.ccx.mq.remoting.netty.codec;
 
 import com.ccx.mq.remoting.protocol.codec.CommandDecoder;
 import io.netty.buffer.ByteBuf;
@@ -6,7 +6,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import lombok.extern.slf4j.Slf4j;
 
-import static com.ccx.mq.remoting.protocol.consts.CommandFrameConst.*;
+import static com.ccx.mq.remoting.consts.CommandFrameConst.*;
 
 /**
  * netty 的解码器

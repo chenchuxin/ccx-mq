@@ -1,10 +1,10 @@
-package com.ccx.mq.remoting.protocol.netty.server;
+package com.ccx.mq.remoting.netty.server;
 
 import cn.hutool.core.net.NetUtil;
 import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.core.util.RuntimeUtil;
-import com.ccx.mq.remoting.protocol.netty.codec.NettyDecoder;
-import com.ccx.mq.remoting.protocol.netty.codec.NettyEncoder;
+import com.ccx.mq.remoting.netty.codec.NettyDecoder;
+import com.ccx.mq.remoting.netty.codec.NettyEncoder;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.epoll.Epoll;

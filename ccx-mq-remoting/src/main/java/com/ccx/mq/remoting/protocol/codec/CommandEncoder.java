@@ -1,14 +1,14 @@
 package com.ccx.mq.remoting.protocol.codec;
 
+import com.ccx.mq.remoting.consts.CommandType;
 import com.ccx.mq.remoting.protocol.Command;
 import com.ccx.mq.remoting.protocol.compress.Compressor;
 import com.ccx.mq.remoting.protocol.compress.CompressorFactory;
-import com.ccx.mq.remoting.protocol.consts.CommandType;
 import com.ccx.mq.remoting.protocol.serialize.Serializer;
 import com.ccx.mq.remoting.protocol.serialize.SerializerFactory;
 import io.netty.buffer.ByteBuf;
 
-import static com.ccx.mq.remoting.protocol.consts.CommandFrameConst.*;
+import static com.ccx.mq.remoting.consts.CommandFrameConst.*;
 
 /**
  * 命令解码器

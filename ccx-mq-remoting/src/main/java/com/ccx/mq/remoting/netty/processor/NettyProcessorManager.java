@@ -1,9 +1,9 @@
-package com.ccx.mq.remoting.protocol.netty.processor;
+package com.ccx.mq.remoting.netty.processor;
 
 import cn.hutool.json.JSONUtil;
+import com.ccx.mq.remoting.consts.CommandFrameConst;
+import com.ccx.mq.remoting.consts.CommandType;
 import com.ccx.mq.remoting.protocol.Command;
-import com.ccx.mq.remoting.protocol.consts.CommandFrameConst;
-import com.ccx.mq.remoting.protocol.consts.CommandType;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.extern.slf4j.Slf4j;
 
