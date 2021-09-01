@@ -33,19 +33,30 @@ public class CommandDecoder {
      * @return 命令对象
      */
     public Command decode(ByteBuf in) {
+        /*
+         * 消息格式：
+         * 2B magic（魔法数）
+         * 1B version（版本）
+         * 4B full length（消息长度）
+         * 1B commandType（命令类型：请求/响应）
+         * 4B commandCode (命令编码)
+         * 1B compress（压缩类型）
+         * 1B serialize（序列化类型）
+         * 8B requestId（请求的Id）
+         * body（object类型数据）
+         */
         readAndCheckMagic(in);
         byte version = in.readByte();
         int fullLength = in.readInt();
         byte commandType = in.readByte();
-        Command.CommandBuilder cmdBuilder = Command.builder().version(version).commandType(commandType);
-        if (commandType == CommandType.HEARTBEAT.getValue()) {
-            return cmdBuilder.build();
-        }
-        int code = in.readInt();
+        int commandCode = in.readInt();
         byte compressorType = in.readByte();
         byte serializerType = in.readByte();
         long requestId = in.readLong();
-        Command cmd = cmdBuilder.commandCode(code)
+        Command cmd = Command.builder()
+                .version(version)
+                .commandType(commandType)
+                .commandCode(commandCode)
                 .compressorType(compressorType)
                 .serializerType(serializerType)
                 .requestId(requestId)

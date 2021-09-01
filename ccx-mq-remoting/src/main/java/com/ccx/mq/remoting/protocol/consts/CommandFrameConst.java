@@ -2,8 +2,6 @@ package com.ccx.mq.remoting.protocol.consts;
 
 import cn.hutool.core.util.ByteUtil;
 
-import java.util.concurrent.atomic.AtomicLong;
-
 /**
  * 命令协议框架常量
  *
@@ -20,11 +18,6 @@ public interface CommandFrameConst {
      * 版本
      */
     byte VERSION = 1;
-
-    /**
-     * 请求 Id
-     */
-    AtomicLong REQUEST_ID = new AtomicLong(0);
 
     /**
      * 魔法数字长度

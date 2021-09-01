@@ -10,16 +10,18 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
+ * 请求管理
+ *
  * @author chenchuxin
  * @date 2021/8/31
  */
 @Slf4j
-public class RequestFuture {
+public class RequestFutureManager {
 
     /**
      * 结果列表。{requestId: 处理结果}
      */
-    private static final Map<Long, CompletableFuture<Command>> FUTURE_MAP = new ConcurrentHashMap<>();
+    private static final Map<Long, CompletableFuture<Command>> FUTURE_MAP = new ConcurrentHashMap<>(32);
 
     /**
      * 加入请求
@@ -28,6 +30,9 @@ public class RequestFuture {
      * @param future    结果等待
      */
     public void putRequest(long requestId, CompletableFuture<Command> future) {
+        if (log.isDebugEnabled()) {
+            log.debug("putRequest. requestId={}", requestId);
+        }
         FUTURE_MAP.put(requestId, future);
     }
 
@@ -42,7 +47,8 @@ public class RequestFuture {
         if (future != null) {
             future.complete(response);
         } else {
-            log.warn("Process response command error. address:{}, response:{}", ctx.channel().remoteAddress(), JSONUtil.toJsonStr(response));
+            log.warn("Process response command error. requestId={}, address:{}, response:{}",
+                    response.getRequestId(), ctx.channel().remoteAddress(), JSONUtil.toJsonStr(response));
         }
     }
 }

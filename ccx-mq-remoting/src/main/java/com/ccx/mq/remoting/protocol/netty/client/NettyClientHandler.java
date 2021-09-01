@@ -1,8 +1,10 @@
 package com.ccx.mq.remoting.protocol.netty.client;
 
 import com.ccx.mq.remoting.protocol.Command;
-import com.ccx.mq.remoting.protocol.consts.*;
-import com.ccx.mq.remoting.protocol.netty.processor.NettyProcessorManager;
+import com.ccx.mq.remoting.protocol.consts.CommandCode;
+import com.ccx.mq.remoting.protocol.consts.CommandType;
+import com.ccx.mq.remoting.protocol.consts.CompressType;
+import com.ccx.mq.remoting.protocol.consts.SerializeType;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
@@ -13,6 +15,7 @@ import io.netty.util.ReferenceCountUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * netty 客户端处理
@@ -23,13 +26,18 @@ import java.util.concurrent.CompletableFuture;
 @Slf4j
 public class NettyClientHandler extends SimpleChannelInboundHandler<Command> {
 
-    private final RequestFuture requestFuture = new RequestFuture();
+    private final RequestFutureManager requestFutureManager = new RequestFutureManager();
+
+    /**
+     * 请求 Id
+     */
+    private static final AtomicLong REQUEST_ID = new AtomicLong(0);
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, Command cmd) {
         try {
             if (cmd.getCommandType() == CommandType.RESPONSE.getValue()) {
-                requestFuture.processResponseCommand(ctx, cmd);
+                requestFutureManager.processResponseCommand(ctx, cmd);
             }
         } finally {
             ReferenceCountUtil.release(cmd);
@@ -77,7 +85,7 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<Command> {
      */
     public CompletableFuture<Command> request(Channel channel, Object body, CommandCode commandCode) {
         Command requestCommand = new Command();
-        long requestId = CommandFrameConst.REQUEST_ID.getAndIncrement();
+        long requestId = createRequestId();
         requestCommand.setRequestId(requestId);
         requestCommand.setCommandCode(commandCode.getCode());
         requestCommand.setCommandType(CommandType.REQUEST.getValue());
@@ -86,7 +94,7 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<Command> {
         requestCommand.setBody(body);
 
         CompletableFuture<Command> resultFuture = new CompletableFuture<>();
-        requestFuture.putRequest(requestId, resultFuture);
+        requestFutureManager.putRequest(requestId, resultFuture);
         channel.writeAndFlush(requestCommand).addListener((ChannelFutureListener) future -> {
             if (future.isSuccess()) {
                 log.info("client send message: [{}]", body);
@@ -97,6 +105,10 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<Command> {
             }
         });
         return resultFuture;
+    }
+
+    public Long createRequestId() {
+        return REQUEST_ID.getAndIncrement();
     }
 
 }

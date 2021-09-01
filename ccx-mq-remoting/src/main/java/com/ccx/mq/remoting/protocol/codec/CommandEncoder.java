@@ -3,13 +3,10 @@ package com.ccx.mq.remoting.protocol.codec;
 import com.ccx.mq.remoting.protocol.Command;
 import com.ccx.mq.remoting.protocol.compress.Compressor;
 import com.ccx.mq.remoting.protocol.compress.CompressorFactory;
-import com.ccx.mq.remoting.protocol.consts.CommandFrameConst;
 import com.ccx.mq.remoting.protocol.consts.CommandType;
 import com.ccx.mq.remoting.protocol.serialize.Serializer;
 import com.ccx.mq.remoting.protocol.serialize.SerializerFactory;
 import io.netty.buffer.ByteBuf;
-
-import java.util.Optional;
 
 import static com.ccx.mq.remoting.protocol.consts.CommandFrameConst.*;
 
@@ -61,7 +58,7 @@ public class CommandEncoder {
         // 1B serialize（序列化类型）
         out.writeByte(cmd.getSerializerType());
         // 8B requestId（请求的Id）, 心跳不需要，因为服务端不管的
-        long requestId = cmd.getCommandType() == CommandType.HEARTBEAT.getValue() ? 0L : REQUEST_ID.getAndIncrement();
+        long requestId = cmd.getCommandType() == CommandType.HEARTBEAT.getValue() ? 0L : cmd.getRequestId();
         out.writeLong(requestId);
 
         // 写 body，返回 body 长度

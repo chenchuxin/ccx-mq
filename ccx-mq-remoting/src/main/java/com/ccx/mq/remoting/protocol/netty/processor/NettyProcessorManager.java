@@ -1,5 +1,6 @@
 package com.ccx.mq.remoting.protocol.netty.processor;
 
+import cn.hutool.json.JSONUtil;
 import com.ccx.mq.remoting.protocol.Command;
 import com.ccx.mq.remoting.protocol.consts.CommandFrameConst;
 import com.ccx.mq.remoting.protocol.consts.CommandType;
@@ -50,6 +51,7 @@ public class NettyProcessorManager {
      * @param request 请求命令
      */
     public void process(ChannelHandlerContext ctx, Command request) {
+        log.info("process. request={}", JSONUtil.toJsonStr(request));
         // 从注册表中拿到对应的处理器
         NettyProcessor processor = getProcessor(request.getCommandCode());
         if (processor == null) {

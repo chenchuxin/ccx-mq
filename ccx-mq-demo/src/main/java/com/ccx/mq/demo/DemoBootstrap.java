@@ -10,8 +10,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @date 2021/8/29
  */
 @SpringBootApplication
-public class Bootstrap {
+public class DemoBootstrap {
     public static void main(String[] args) {
-        SpringApplication.run(Bootstrap.class, args);
+        SpringApplication.run(DemoBootstrap.class, args);
     }
 }
