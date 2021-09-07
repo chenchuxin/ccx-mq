@@ -15,6 +15,12 @@
 #### 1.1.0
 - [ ] 消息使用硬盘持久化
 
+### 如何运行
+1. 启动 broker：`ccx-mq-broker` 的 `BrokerBootstrap`
+2. 启动客户端 Demo：`ccx-mq-demo` 的 `DemoBootstrap`，是一个 Web
+3. 调用 `http://localhost:8080/producer/send?msg=hello` 发送消息
+4. 调用 `http://localhost:8080/consumer/pull?count=10` 拉消息
+5. 调用 `http://localhost:8080/consumer/updateOffset?offset=1` 更新位移
 
 #### 参与贡献
 1.  Fork 本仓库
