@@ -67,7 +67,7 @@ public class NettyServer {
                             // 编解码器
                             p.addLast(new NettyEncoder());
                             p.addLast(new NettyDecoder());
-                            // RPC 消息处理器
+                            // 消息处理器
                             p.addLast(serviceHandlerGroup, new NettyServerHandler());
                         }
                     });

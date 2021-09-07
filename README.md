@@ -6,7 +6,6 @@
 ### 版本规划
 #### 1.0.0
 - [x] 初始架构：broker、client(producer、consumer)
-- [ ] 要求多 producer 能生产消息，多 consumer 能消费消息
 - [x] 支持 topic(主题)，暂不支持消费者/分区/多队列
 - [x] broker 和 client 独立部署，用网络请求生产/消费消息
 - [x] broker 先用单机模式，暂不支持集群

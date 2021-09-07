@@ -56,11 +56,7 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<Command> {
                         .commandCode(0)
                         .serializerType(SerializeType.PROTOSTUFF.getValue())
                         .compressorType(CompressType.GZIP.getValue()).build();
-                channel.writeAndFlush(cmd).addListener((ChannelFutureListener) future -> {
-                    if (!future.isSuccess()) {
-                        future.channel().close();
-                    }
-                });
+                channel.writeAndFlush(cmd).addListener(ChannelFutureListener.CLOSE_ON_FAILURE);
             }
         } else {
             super.userEventTriggered(ctx, evt);
